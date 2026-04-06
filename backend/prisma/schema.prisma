@@ -1,0 +1,286 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+enum Role {
+  ADMIN
+  USER
+}
+
+/// Covers residential, commercial, and land categories
+enum PropertyType {
+  // Residential
+  HOUSE
+  APARTMENT
+  TOWNHOUSE
+  VILLA
+  STUDIO
+
+  // Commercial
+  OFFICE
+  SHOP
+  WAREHOUSE
+  INDUSTRIAL
+
+  // Land
+  LAND
+  PLOT
+  FARM
+}
+
+enum ListingType {
+  FOR_SALE
+  FOR_RENT
+  SHORT_TERM   
+  VACATION     
+}
+
+enum PropertyStatus {
+  ACTIVE
+  PENDING
+  SOLD
+  RENTED
+  INACTIVE
+}
+
+enum FurnishingStatus {
+  FURNISHED
+  SEMI_FURNISHED
+  UNFURNISHED
+}
+
+enum InquiryStatus {
+  NEW
+  IN_PROGRESS
+  CLOSED
+}
+
+// ─────────────────────────────────────────────
+//  USER
+// ─────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  password String
+  firstName    String
+  lastName     String
+  phone        String?
+  avatarUrl    String?
+  role         Role     @default(USER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  favorites     Favorite[]
+  inquiries     Inquiry[]
+  savedSearches SavedSearch[]
+
+  @@index([email])
+}
+// ─────────────────────────────────────────────
+//  AGENTS
+// ─────────────────────────────────────────────
+
+model Agent {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  firstName    String
+  lastName     String
+  phone        String?
+  avatarUrl    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([email])
+}
+
+// ─────────────────────────────────────────────
+//  LOCATION
+// ─────────────────────────────────────────────
+
+model Location {
+  id           String  @id @default(cuid())
+  address      String
+  city         String
+  state        String?
+  country      String
+  zipCode      String?
+
+  property Property?
+
+  @@index([city])
+  @@index([country])
+}
+
+// ─────────────────────────────────────────────
+//  PROPERTY
+//  All filterable fields are indexed at the bottom
+// ─────────────────────────────────────────────
+
+model Property {
+  id           String         @id @default(cuid())
+  title        String
+  slug         String         @unique
+  description  String
+  internalNotes String?
+  propertyType PropertyType
+  listingType  ListingType
+  status       PropertyStatus @default(ACTIVE)
+
+  // ── Pricing ────────────────────────────────
+  price        Float          // sale price OR monthly/nightly rent
+  pricePerSqft Float?
+  isNegotiable Boolean        @default(false)
+
+  // ── Size & Structure ───────────────────────
+  areaSize      Float          // sqft or sqm
+  areaSizeUnit  String         @default("sqft")  // "sqft" | "sqm"
+  bedrooms      Int?           // null for commercial / land
+  bathrooms     Int?
+  floors        Int?
+  floorNumber   Int?           // which floor (apartments)
+  totalFloors   Int?
+  parkingSpaces Int?
+  yearBuilt     Int?
+
+  // ── Condition / Style ──────────────────────
+  furnishingStatus  FurnishingStatus?
+  isNewConstruction Boolean?
+
+  // ── Boolean filter flags ───────────────────
+  isFeatured    Boolean  @default(false)
+  isVerified    Boolean  @default(false)
+  hasGarden     Boolean?
+  hasPool       Boolean?
+  hasBasement   Boolean?
+  hasElevator   Boolean?
+  hasBalcony    Boolean?
+
+  // ── Short-term / Vacation specific ─────────
+  maxGuests     Int?
+  minStayNights Int?
+
+
+  // ── Timestamps ─────────────────────────────
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  publishedAt DateTime?
+
+  // ── Relations ──────────────────────────────
+  locationId String   @unique
+  location   Location @relation(fields: [locationId], references: [id])
+
+  images    PropertyImage[]
+  agentId   String
+  agent     Agent @relation(fields: [agentId], references: [id])
+  
+  features  PropertyFeature[]
+  favorites Favorite[]
+  inquiries Inquiry[]
+
+  // ── Filter indexes ─────────────────────────
+  @@index([title])
+  @@index([propertyType])
+  @@index([listingType])
+  @@index([status])
+  @@index([price])
+  @@index([bedrooms])
+  @@index([bathrooms])
+  @@index([areaSize])
+  @@index([yearBuilt])
+  @@index([isFeatured])
+  @@index([furnishingStatus])
+  @@index([createdAt])
+}
+
+// ─────────────────────────────────────────────
+//  PROPERTY IMAGES
+// ─────────────────────────────────────────────
+
+model PropertyImage {
+  id         String   @id @default(cuid())
+  propertyId String
+  url        String
+  altText    String?
+  isPrimary  Boolean  @default(false)
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@index([propertyId])
+}
+
+
+
+// ─────────────────────────────────────────────
+//  PROPERTY FEATURES  (flexible key-value)
+//  Examples:
+//    { key: "view",     value: "ocean"    }
+//    { key: "flooring", value: "hardwood" }
+//    { key: "heating",  value: "central"  }
+// ─────────────────────────────────────────────
+
+model PropertyFeature {
+  id         String @id @default(cuid())
+  propertyId String
+  key        String
+  value      String
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@index([propertyId])
+  @@index([key, value])
+}
+
+
+// ─────────────────────────────────────────────
+//  FAVORITES / WISHLIST
+// ─────────────────────────────────────────────
+
+model Favorite {
+  id         String   @id @default(cuid())
+  userId     String
+  propertyId String
+  createdAt  DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, propertyId]) // prevents duplicate favorites
+  @@index([userId])
+}
+
+// ─────────────────────────────────────────────
+//  INQUIRIES / LEADS
+// ─────────────────────────────────────────────
+
+model Inquiry {
+  id         String        @id @default(cuid())
+  propertyId String
+  userId     String?       // null for guest / unauthenticated inquiries
+  name       String
+  email      String
+  phone      String?
+  message    String
+  status     InquiryStatus @default(NEW)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  user     User?    @relation(fields: [userId], references: [id])
+
+  @@index([propertyId])
+  @@index([status])
+  @@index([email])
+  @@index([createdAt])
+}
+
+
