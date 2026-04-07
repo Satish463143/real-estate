@@ -1,7 +1,6 @@
 const agentsService = require("./agents.service");
 
 class AgentsController {
-    agnetDetails;
     create = async(req,res,next)=>{
         try{
             const data = req.body

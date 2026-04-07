@@ -1,8 +1,7 @@
 
 require("dotenv").config();
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
 const userService = require("../module/user/user.service");
-const prisma = require("../config/db.config");
 
 const loginCheck = async (req, res, next) => {
     try {
@@ -18,7 +17,7 @@ const loginCheck = async (req, res, next) => {
             throw{status:403, message: "Main Token is required"}
         }
 
-        const user = await userService.getSingleUserByFilter({
+        const user = await userService.getUserById({
             id: data.sub
         });
 
@@ -26,27 +25,12 @@ const loginCheck = async (req, res, next) => {
             throw { status: 404, message: "User does not exist" };
         }
 
-        let studentProfileId = null;
-        let parentProfileId = null;
-
-        if (user.role === "student") {
-            const sp = await prisma.studentProfile.findFirst({ where: { userId: user.id } });
-            studentProfileId = sp?.id ?? null;
-        }
-        if (user.role === "parent") {
-            const pp = await prisma.parentProfile.findFirst({ where: { userId: user.id } });
-            parentProfileId = pp?.id ?? null;
-        }
-
         req.authUser = {
             id: user.id,
-            name: user.name,
+            firstName: user.firstName,
+            lastName: user.lastName,
             role: user.role,
-            status: user.status,
             email:user.email,
-            schoolId:user.schoolId,
-            studentProfileId,
-            parentProfileId,
         };
         next();
     } catch (exception) {

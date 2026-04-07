@@ -1,3 +1,5 @@
+const propertyService = require("./property.service")
+
 class PropertyController{
     create = async(req,res,next)=>{
         try{

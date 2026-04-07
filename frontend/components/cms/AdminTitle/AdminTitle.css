@@ -1,0 +1,23 @@
+.back_link{
+    display: flex;
+    margin-bottom: 5px;
+}
+.back_link h4{
+    font-weight: 600;
+
+}
+ .hr{
+    background: var(--sec_dark);
+    width: 100%;
+    height: 1px;
+
+}
+.Dashboard_title{
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+.Dashboard_title h1{
+    font-size: 25px;
+    font-weight: 600;
+}
