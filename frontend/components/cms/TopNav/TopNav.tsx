@@ -1,8 +1,7 @@
 'use client'
 import { useDispatch, useSelector } from 'react-redux'
-import { toast, ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css';
 import { logoutUser } from '../../../src/reducer/user.reducer'
+import Swal from 'sweetalert2'
 
 const TopNav = ({ isMenuActive, toggleMenu }: { isMenuActive: boolean, toggleMenu: () => void }) => {
     const dispatch: any = useDispatch()
@@ -11,45 +10,46 @@ const TopNav = ({ isMenuActive, toggleMenu }: { isMenuActive: boolean, toggleMen
     })
     const logout = async () => {
         try {
-            toast.loading("Logging out...");
-           
-            // Call the logout endpoint to clear tokens in the database
-            await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`,{
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('_at')}`,
-                },
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You want to logout?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, logout!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem('_at');
+                    localStorage.removeItem('_rt');
+                    dispatch(logoutUser())
+                    Swal.fire({
+                        title: "Logged out successfully",
+                        icon: "success",
+                        timer: 1000,
+                        showConfirmButton: false
+                    })
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1000);
+                }
             })
         } catch (error) {
             console.error("Logout API call failed:", error);
             // Continue with logout even if API call fails
-        } finally {
-            // Always clear local data regardless of API call success
-            // Remove tokens from localStorage
-            localStorage.removeItem('_at');
-            localStorage.removeItem('_rt');
-            dispatch(logoutUser())
-    
-            toast.dismiss(); // Remove the loading toast
-            toast.success("You have been logged out successfully")
-            
-            // Reload the page to clear all cached data and reset the app state
-            setTimeout(() => {
-                window.location.href = '/admin';
-            }, 1000);
-        }
+        } 
     };
 
   return (
     
     <div className='top_nav' style={{background:'#fff'}}>
-        <ToastContainer/>
         <div className='welcome_message'>
             <div className={`hamburg_menu ${isMenuActive ? 'menuActive' : ''}`} onClick={toggleMenu}>
                 <div className='menu_1'></div>
                 <div className='menu_2'></div>
                 <div className='menu_3'></div>
             </div>
-            <p>Hi, Welcome Back {loggedInUser?.name}</p>
+            <p>Hi, Welcome Back {loggedInUser?.firstName} {loggedInUser?.lastName}</p>
         </div>
           
           

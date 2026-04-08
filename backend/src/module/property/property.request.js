@@ -56,7 +56,6 @@ const createPropertyDTO = Joi.object({
   areaSizeUnit: Joi.string().valid("sqft", "sqm").default("sqft"),
   bedrooms: Joi.number().integer().min(0).optional(),
   bathrooms: Joi.number().integer().min(0).optional(),
-  floors: Joi.number().integer().min(1).optional(),
   floorNumber: Joi.number().integer().min(0).optional(),
   totalFloors: Joi.number().integer().min(1).optional(),
   parkingSpaces: Joi.number().integer().min(0).optional(),
@@ -94,6 +93,9 @@ const createPropertyDTO = Joi.object({
 
   // features array is optional on creation
   features: Joi.array().items(featureSchema).optional(),
+
+  // Image buffers are set by imageUpload.middleware – Joi just needs to allow them
+  images: Joi.array().items(Joi.any()).optional(),
 })
 
 // ─────────────────────────────────────────────
@@ -157,6 +159,9 @@ const updatePropertyDTO = Joi.object({
 
   // replace / merge features on update
   features: Joi.array().items(featureSchema).optional(),
+
+  // New images to append (optional on update)
+  images: Joi.array().items(Joi.any()).optional(),
 })
   .min(1) // at least one field must be provided
 

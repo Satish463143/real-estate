@@ -8,7 +8,6 @@ const userCreateDTO = Joi.object({
     email: Joi.string().email().required(),
     password: Joi.string().required(),
     phone: Joi.string().optional(),
-    avatarUrl: Joi.string().optional(), 
 })
 
 const userUpdateDTO = Joi.object({
@@ -16,7 +15,6 @@ const userUpdateDTO = Joi.object({
     lastName: Joi.string().optional(),
     email: Joi.string().optional(),
     phone: Joi.string().optional(),
-    avatarUrl: Joi.string().optional(), 
 })
 
 

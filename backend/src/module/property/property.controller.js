@@ -1,124 +1,121 @@
-const propertyService = require("./property.service")
+const propertyService = require('./property.service')
 
-class PropertyController{
-    create = async(req,res,next)=>{
-        try{
-            const data = req.body
-            const response = await propertyService.create(data)
-            res.json({
-                result:response,
-                message: "Property created successfully",
-                meta : null
+class PropertyController {
+
+    create = async (req, res, next) => {
+        try {
+            const response = await propertyService.create(req.body)
+            res.status(201).json({
+                result:  response,
+                message: 'Property created successfully',
+                meta:    null,
             })
-
-        }catch(exception){
+        } catch (exception) {
             console.log(exception)
             next(exception)
         }
     }
-    index = async(req,res,next)=>{
-        try{
-            const limit = req.query.limit || 10
-            const page = req.query.page || 0
-            const skip = (page - 1) * limit
+
+    index = async (req, res, next) => {
+        try {
+            const limit = parseInt(req.query.limit) || 10
+            const page  = parseInt(req.query.page)  || 1
+            const skip  = (page - 1) * limit
+
             const filter = {}
-            if (req.query.search){
+            if (req.query.search) {
                 filter.OR = [
-                    {title: {contains: req.query.search}},
-                    {description: {contains: req.query.search}},
-                    {location: {contains: req.query.search}}
+                    { title:       { contains: req.query.search, mode: 'insensitive' } },
+                    { description: { contains: req.query.search, mode: 'insensitive' } },
+                    { location:    { city:    { contains: req.query.search, mode: 'insensitive' } } },
                 ]
             }
-            const {data, count} = await propertyService.index(limit,skip,filter)
-            res.json({
-                result:data,
-                message: "Properties fetched successfully",
-                meta : {
-                    currentPage:page,
-                    total:count,
-                    limit:limit
-                }
-            })
 
-        }catch(exception){
+            const { data, count } = await propertyService.index(limit, skip, filter)
+            res.json({
+                result:  data,
+                message: 'Properties fetched successfully',
+                meta: {
+                    currentPage: page,
+                    total:       count,
+                    limit,
+                    totalPages:  Math.ceil(count / limit),
+                },
+            })
+        } catch (exception) {
             console.log(exception)
             next(exception)
         }
     }
-    #validate = async(id)=>{
-        if(!id) throw {status:400,message:"Property id is required"}
+
+    #validate = async (id) => {
+        if (!id) throw { status: 400, message: 'Property id is required' }
         const property = await propertyService.getPropertyById(id)
-        if(!property) throw {status:404,message:"Property not found"}
+        if (!property) throw { status: 404, message: 'Property not found' }
         return property
     }
-    showById = async(req,res,next)=>{
-        try{
+
+    showById = async (req, res, next) => {
+        try {
             const property = await this.#validate(req.params.id)
             res.json({
-                result:property,
-                message: "Property fetched successfully",
-                meta : null
+                result:  property,
+                message: 'Property fetched successfully',
+                meta:    null,
             })
-        }catch(exception){
+        } catch (exception) {
             console.log(exception)
             next(exception)
         }
     }
 
-    update = async(req,res,next)=>{
-        try{
+    update = async (req, res, next) => {
+        try {
             const property = await this.#validate(req.params.id)
             const response = await propertyService.update(property.id, req.body)
             res.json({
-                result:response,
-                message: "Property updated successfully",
-                meta : null
+                result:  response,
+                message: 'Property updated successfully',
+                meta:    null,
             })
-
-        }catch(exception){
+        } catch (exception) {
             console.log(exception)
             next(exception)
         }
     }
 
-    delete = async(req,res,next)=>{
-        try{
+    delete = async (req, res, next) => {
+        try {
             const property = await this.#validate(req.params.id)
             const response = await propertyService.delete(property.id)
             res.json({
-                result:response,
-                message: "Property deleted successfully",
-                meta : null
+                result:  response,
+                message: 'Property deleted successfully',
+                meta:    null,
             })
-
-        }catch(exception){
+        } catch (exception) {
             console.log(exception)
             next(exception)
         }
     }
 
-    listForHome = async(req,res,next)=>{
-        try{
-            const limit = parseInt(req.query.limit, 10) || 10
-            const page  = parseInt(req.query.page,  10) || 1
+    listForHome = async (req, res, next) => {
+        try {
+            const limit = parseInt(req.query.limit) || 10
+            const page  = parseInt(req.query.page)  || 1
             const skip  = (page - 1) * limit
 
-            // pass all query params as the filter bag — service picks what it needs
-            const filters = req.query
-
-            const { data, count } = await propertyService.listForHome(filters, limit, skip)
-
+            const { data, count } = await propertyService.listForHome(req.query, limit, skip)
             res.json({
-                result: data,
-                message: "Properties fetched successfully",
+                result:  data,
+                message: 'Properties fetched successfully',
                 meta: {
                     currentPage: page,
-                    total: count,
-                    limit,
-                    totalPages: Math.ceil(count / limit),
-                }
+                    total:count,
+                    limit: limit,
+                },
             })
-        }catch(exception){
+        } catch (exception) {
             console.log(exception)
             next(exception)
         }

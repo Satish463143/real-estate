@@ -11,14 +11,11 @@ const Navbar = () => {
     if (pathname === "/") return "";
     if (pathname.startsWith("/admin/dashboard")) return "Dashboard";
     if (pathname.startsWith("/admin/blog") || pathname.startsWith("/admin/edit_blog") || pathname.startsWith("/admin/add_blog")) return "Blogs";
-    if (pathname.startsWith("/admin/case-study") || pathname.startsWith("/admin/edit_case_study") || pathname.startsWith("/admin/add_case_study")) return "Case Studies";
-    if (pathname.startsWith("/admin/project") || pathname.startsWith("/admin/edit_project") || pathname.startsWith("/admin/add_project")) return "Projects";
-    if (pathname.startsWith("/admin/service") || pathname.startsWith("/admin/edit_service") || pathname.startsWith("/admin/add_service")) return "Services";
-    if (pathname.startsWith("/admin/team") || pathname.startsWith("/admin/edit_team") || pathname.startsWith("/admin/add_team")) return "Team";
+    if (pathname.startsWith("/admin/property") || pathname.startsWith("/admin/edit_property") || pathname.startsWith("/admin/add_property")) return "Property";
+    if (pathname.startsWith("/admin/agent") || pathname.startsWith("/admin/edit_agent") || pathname.startsWith("/admin/add_agent")) return "Agent";
+    if (pathname.startsWith("/admin/user") || pathname.startsWith("/admin/edit_user") || pathname.startsWith("/admin/add_user")) return "User";
+    if (pathname.startsWith("/admin/inquiry") || pathname.startsWith("/admin/inquiry_details")) return "Inquiry";
     if (pathname.startsWith("/admin/testimonial") || pathname.startsWith("/admin/edit_testimonial") || pathname.startsWith("/admin/add_testimonial")) return "Testimonial";
-    if (pathname.startsWith("/admin/contact")) return "Contact";
-    if (pathname.startsWith("/packages")) return "Package";
-    if (pathname.startsWith("/portfolio")) return "Portfolio";
     return "";
   }, [pathname]);
 
@@ -73,27 +70,16 @@ const Navbar = () => {
                   </span>
                   <p>Blogs</p>
                 </li>
-              </Link>              
-              <Link href='/admin/case-study'>
-                <li className={activeLink === "Case Studies" ? "liActive" : ""}>
+              </Link>           
+              <Link href='/admin/property'>
+                <li className={activeLink === "Property" ? "liActive" : ""}>
                   <span>
                     <svg height="25" viewBox="0 0 48 48" width="25" xmlns="http://www.w3.org/2000/svg">
                       <path d="M38 14h-16v12h16v-12zm4-8h-36c-2.21 0-4 1.79-4 4v28c0 2.21 1.79 3.96 4 3.96h36c2.21 0 4-1.76 4-3.96v-28c0-2.21-1.79-4-4-4zm0 32.03h-36v-28.06h36v28.06z"/>
                       <path d="M0 0h48v48h-48z" fill="none"/>
                     </svg>
                   </span>
-                  <p>Case Studies</p>
-                </li>
-              </Link>              
-              <Link href='/admin/project'>
-                <li className={activeLink === "Projects" ? "liActive" : ""}>
-                  <span>
-                    <svg height="25" viewBox="0 0 48 48" width="25" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M38 14h-16v12h16v-12zm4-8h-36c-2.21 0-4 1.79-4 4v28c0 2.21 1.79 3.96 4 3.96h36c2.21 0 4-1.76 4-3.96v-28c0-2.21-1.79-4-4-4zm0 32.03h-36v-28.06h36v28.06z"/>
-                      <path d="M0 0h48v48h-48z" fill="none"/>
-                    </svg>
-                  </span>
-                  <p>Projects</p>
+                  <p>Property</p>
                 </li>
               </Link>              
               <Link href='/admin/testimonial'>
@@ -107,39 +93,39 @@ const Navbar = () => {
                   <p>Testimonial</p>
                 </li>
               </Link>              
-              <Link href='/admin/service'>
-                <li className={activeLink === "Services" ? "liActive" : ""}>
+              <Link href='/admin/agent'>
+                <li className={activeLink === "Agent" ? "liActive" : ""}>
                   <span>
                     <svg height="25" viewBox="0 0 48 48" width="25" xmlns="http://www.w3.org/2000/svg">
                       <path d="M38 14h-16v12h16v-12zm4-8h-36c-2.21 0-4 1.79-4 4v28c0 2.21 1.79 3.96 4 3.96h36c2.21 0 4-1.76 4-3.96v-28c0-2.21-1.79-4-4-4zm0 32.03h-36v-28.06h36v28.06z"/>
                       <path d="M0 0h48v48h-48z" fill="none"/>
                     </svg>
                   </span>
-                  <p>Services</p>
+                  <p>Agent</p>
                 </li>
               </Link>              
-              <Link href='/admin/team'>
-                <li className={activeLink === "Team" ? "liActive" : ""}>
+              <Link href='/admin/user'>
+                <li className={activeLink === "User" ? "liActive" : ""}>
                   <span>
                     <svg height="25" viewBox="0 0 48 48" width="25" xmlns="http://www.w3.org/2000/svg">
                       <path d="M38 14h-16v12h16v-12zm4-8h-36c-2.21 0-4 1.79-4 4v28c0 2.21 1.79 3.96 4 3.96h36c2.21 0 4-1.76 4-3.96v-28c0-2.21-1.79-4-4-4zm0 32.03h-36v-28.06h36v28.06z"/>
                       <path d="M0 0h48v48h-48z" fill="none"/>
                     </svg>
                   </span>
-                  <p>Team</p>
+                  <p>User</p>
                 </li>
               </Link>              
-              <Link href='/admin/contact'>
-                <li className={activeLink === "Contact" ? "liActive" : ""}>
+              <Link href='/admin/inquiry'>
+                <li className={activeLink === "Inquiry" ? "liActive" : ""}>
                   <span>
                     <svg height="25" viewBox="0 0 48 48" width="25" xmlns="http://www.w3.org/2000/svg">
                       <path d="M38 14h-16v12h16v-12zm4-8h-36c-2.21 0-4 1.79-4 4v28c0 2.21 1.79 3.96 4 3.96h36c2.21 0 4-1.76 4-3.96v-28c0-2.21-1.79-4-4-4zm0 32.03h-36v-28.06h36v28.06z"/>
                       <path d="M0 0h48v48h-48z" fill="none"/>
                     </svg>
                   </span>
-                  <p>Contact</p>
+                  <p>Inquiry</p>
                 </li>
-              </Link>              
+              </Link>           
                           
             </ul>
           </nav>

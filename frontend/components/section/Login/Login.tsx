@@ -8,9 +8,9 @@ import { useLoginMutation } from '../../api/login.api';
 import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { setLoggedInUser } from '../../../src/reducer/user.reducer';
+import Swal from 'sweetalert2';
 
 
 const Login = () => {
@@ -42,17 +42,24 @@ const Login = () => {
         setLoading(true);
         try {
             const response = await loginUser(data).unwrap();
-            toast.success("Welcome Admins Panel");
             localStorage.setItem("_at", response.result.token.token);
             localStorage.setItem("_rt", response.result.token.refreshToken);
             dispatch(setLoggedInUser(response.result.userDetails));
             console.log('logged in user',response.result.userDetails)
             setTimeout(() => {
-              router.push('/admin/dashboard');
+                if(response.result.userDetails.role === 'admin'){
+                    router.push('/admin/dashboard');
+                }else{
+                    router.push('/my-account');
+                }
             }, 500); 
 
         }catch(error:any){
-            toast.error(error.data?.message || "Login failed");
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.data?.message || "Login failed",
+            })
             console.log(error);
         }
         finally{
@@ -64,7 +71,7 @@ const Login = () => {
         <div className='login_container'>
             <div className="login_box">
                 <div className="login_header">
-                    <h1>Admin Login</h1>
+                    <h1>Login</h1>
                     <p>Enter your credentials to access the dashboard</p>
                 </div>
                 
@@ -102,6 +109,9 @@ const Login = () => {
                     <button type='submit' disabled={loading} className="login_button">
                         Sign In
                         {loading && <span className="loading_spinner">Signing in...</span>}
+                    </button>
+                    <button type='button' disabled={loading} className="login_button">
+                        Sign Up
                     </button>
                 </form>
             </div>        

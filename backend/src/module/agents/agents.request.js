@@ -6,7 +6,7 @@ const agentCreateDTO = Joi.object({
     lastName: Joi.string().required(),
     email: Joi.string().email().required(),
     phone: Joi.string().optional(),
-    avatarUrl: Joi.string().optional(),
+    avatarUrl: Joi.any().optional(),
 })
 
 const agentUpdateDTO = Joi.object({
@@ -14,7 +14,7 @@ const agentUpdateDTO = Joi.object({
     lastName: Joi.string().optional(),
     email: Joi.string().email().optional(),
     phone: Joi.string().optional(),
-    avatarUrl: Joi.string().optional(),
+    avatarUrl: Joi.any().optional(),
 })
 
 module.exports = {

@@ -21,9 +21,7 @@ const AgentAdd = () => {
       formData.append('phone', data.phone)
       formData.append('email', data.email)
       formData.append('avatarUrl', data.avatarUrl)
-
-
-
+      
       await createAgent(formData).unwrap()
       Swal.fire({
         title: 'Success',

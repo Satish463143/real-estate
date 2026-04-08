@@ -5,6 +5,16 @@ import { combineReducers } from '@reduxjs/toolkit'
 
 import userReducer from '../reducer/user.reducer'
 import { AuthApi } from '../../components/api/login.api'
+import { InquiryApi } from '../../components/api/inquiry.api'
+import { UserApi } from '../../components/api/user.api'
+import { PropertiesApi } from '../../components/api/properties.api'
+import { AgentApi } from '../../components/api/agent.api'
+import { BlogApi } from '../../components/api/blog.api'
+import { FavouriteApi } from '../../components/api/favourite.api'
+import { TestimonialApi } from '../../components/api/testimonal.api'
+
+
+
 
 // Create a noop storage for SSR
 const createNoopStorage = () => {
@@ -34,6 +44,14 @@ const persistConfig = {
 const rootReducer = combineReducers({
     user: userReducer,
     [AuthApi.reducerPath]: AuthApi.reducer,
+    [InquiryApi.reducerPath]: InquiryApi.reducer,
+    [UserApi.reducerPath]: UserApi.reducer,
+    [PropertiesApi.reducerPath]: PropertiesApi.reducer,
+    [AgentApi.reducerPath]: AgentApi.reducer,
+    [BlogApi.reducerPath]: BlogApi.reducer,
+    [FavouriteApi.reducerPath]: FavouriteApi.reducer,
+    [TestimonialApi.reducerPath]: TestimonialApi.reducer,
+    
 })
 
 // Create persisted reducer
@@ -48,6 +66,15 @@ const storeConfig = configureStore({
             },
         })
             .concat(AuthApi.middleware)
+            .concat(InquiryApi.middleware)
+            .concat(UserApi.middleware)
+            .concat(PropertiesApi.middleware)
+            .concat(AgentApi.middleware)
+            .concat(BlogApi.middleware)
+            .concat(FavouriteApi.middleware)
+            .concat(TestimonialApi.middleware)
+            
+            
 })
 
 export const persistor = persistStore(storeConfig)

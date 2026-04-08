@@ -1,12 +1,34 @@
 const prisma = require("../../config/db.config");
 
+/**
+ * Converts a Prisma Bytes (Buffer) field to a base64 data-URI string
+ * so it can be sent over JSON to the frontend.
+ * Returns null if the buffer is empty/null.
+ */
+const bufferToBase64 = (buffer, mimeType = 'image/jpeg') => {
+    if (!buffer) return null
+    return `data:${mimeType};base64,${Buffer.from(buffer).toString('base64')}`
+}
+
+/**
+ * Serialize a testimonial record: convert the image Buffer → base64 string
+ * before sending it as JSON.
+ */
+const serialize = (record) => {
+    if (!record) return null
+    return {
+        ...record,
+        avatarUrl: bufferToBase64(record.avatarUrl),
+    }
+}
+
 class AgentsService {
     create = async(data)=>{
         try{
             const response = await prisma.agent.create({
                 data:data
             })
-            return response
+            return serialize(response)
         }catch(exception){
             console.log(exception);
             throw exception
@@ -32,7 +54,7 @@ class AgentsService {
                 }),
                 prisma.agent.count({where})
             ])
-            return {data, count}
+            return {data: data.map(serialize), count}
         }catch(exception){
             throw(exception)
         }
@@ -43,7 +65,7 @@ class AgentsService {
             const agent = await prisma.agent.findUnique({
                 where: {id}
             })
-            return agent
+            return serialize(agent)
         }catch(exception){
             throw(exception)
         }
@@ -54,7 +76,7 @@ class AgentsService {
                 where: {id},
                 data:data
             })
-            return response
+            return serialize(response)
         }catch(exception){
             throw(exception)
         }
@@ -64,7 +86,7 @@ class AgentsService {
             const response = await prisma.agent.delete({
                 where: {id}
             })
-            return response
+            return serialize(response)
         }catch(exception){
             throw(exception)
         }

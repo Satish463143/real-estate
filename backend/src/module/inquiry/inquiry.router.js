@@ -9,8 +9,6 @@ const router = require("express").Router()
 
 // ── Public + optional-auth ────────────────────────────────────────────────────
 // POST /inquiries  — anyone can submit; userId injected if logged in
-// We use a lightweight optional-auth: loginCheck is NOT required here.
-// The controller reads req.authUser?.id safely.
 router.post(
     "/",
     bodyValidator(createInquiryDTO),

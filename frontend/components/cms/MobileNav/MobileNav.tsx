@@ -1,24 +1,9 @@
 'use client'
-import {useState, useMemo} from 'react'
+import {useState} from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation' 
 
 const MobileNav = ({ isMenuActive, toggleMenu }: { isMenuActive: boolean, toggleMenu: () => void }) => {
     const [menu, setMenu] = useState("Home");
-    const pathname = usePathname();
-
-  const activeLink: string | "" = useMemo(() => {
-    if (!pathname) return "";
-    if (pathname === "/") return "";
-    if (pathname.startsWith("/admin/dashboard")) return "Dashboard";
-    if (pathname.startsWith("/admin/blogs")) return "Blogs";
-    if (pathname.startsWith("/case-study-detail") || pathname.startsWith("/case-studies"))
-      return "Case Studies";
-    if (pathname.startsWith("/services")) return "Services";
-    if (pathname.startsWith("/packages")) return "Package";
-    if (pathname.startsWith("/portfolio")) return "Portfolio";
-    return "";
-  }, [pathname]);
  
   return (
     <div className={`moobile_nav ${isMenuActive ? 'moobile_navActive' : ''} `} >
@@ -66,7 +51,7 @@ const MobileNav = ({ isMenuActive, toggleMenu }: { isMenuActive: boolean, toggle
                     <p>Dashboard</p>
                     </li>
                 </Link>
-                <Link href='/blogs'>
+                <Link href='/admin/blog'>
                   <li onClick={() => { toggleMenu(); setMenu("product"); }} className={menu === "product" ? "liActive" : "" } >
                     <span>
                       <svg height="25" viewBox="0 0 48 48" width="25" xmlns="http://www.w3.org/2000/svg">
@@ -75,6 +60,61 @@ const MobileNav = ({ isMenuActive, toggleMenu }: { isMenuActive: boolean, toggle
                       </svg>
                     </span>
                     <p>Blogs</p>
+                  </li>
+                </Link>                
+                <Link href='/admin/property'>
+                  <li onClick={() => { toggleMenu(); setMenu("product"); }} className={menu === "product" ? "liActive" : "" } >
+                    <span>
+                      <svg height="25" viewBox="0 0 48 48" width="25" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M38 14h-16v12h16v-12zm4-8h-36c-2.21 0-4 1.79-4 4v28c0 2.21 1.79 3.96 4 3.96h36c2.21 0 4-1.76 4-3.96v-28c0-2.21-1.79-4-4-4zm0 32.03h-36v-28.06h36v28.06z"/>
+                        <path d="M0 0h48v48h-48z" fill="none"/>
+                      </svg>
+                    </span>
+                    <p>Property</p>
+                  </li>
+                </Link>                
+                <Link href='/admin/agent'>
+                  <li onClick={() => { toggleMenu(); setMenu("agent"); }} className={menu === "agent" ? "liActive" : "" } >
+                    <span>
+                      <svg height="25" viewBox="0 0 48 48" width="25" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M38 14h-16v12h16v-12zm4-8h-36c-2.21 0-4 1.79-4 4v28c0 2.21 1.79 3.96 4 3.96h36c2.21 0 4-1.76 4-3.96v-28c0-2.21-1.79-4-4-4zm0 32.03h-36v-28.06h36v28.06z"/>
+                        <path d="M0 0h48v48h-48z" fill="none"/>
+                      </svg>
+                    </span>
+                    <p>Agent</p>
+                  </li>
+                </Link>                
+                <Link href='/admin/user'>
+                  <li onClick={() => { toggleMenu(); setMenu("user"); }} className={menu === "user" ? "liActive" : "" } >
+                    <span>
+                      <svg height="25" viewBox="0 0 48 48" width="25" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M38 14h-16v12h16v-12zm4-8h-36c-2.21 0-4 1.79-4 4v28c0 2.21 1.79 3.96 4 3.96h36c2.21 0 4-1.76 4-3.96v-28c0-2.21-1.79-4-4-4zm0 32.03h-36v-28.06h36v28.06z"/>
+                        <path d="M0 0h48v48h-48z" fill="none"/>
+                      </svg>
+                    </span>
+                    <p>User</p>
+                  </li>
+                </Link>                
+                <Link href='/admin/testimonial'>
+                  <li onClick={() => { toggleMenu(); setMenu("testimonial"); }} className={menu === "testimonial" ? "liActive" : "" } >
+                    <span>
+                      <svg height="25" viewBox="0 0 48 48" width="25" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M38 14h-16v12h16v-12zm4-8h-36c-2.21 0-4 1.79-4 4v28c0 2.21 1.79 3.96 4 3.96h36c2.21 0 4-1.76 4-3.96v-28c0-2.21-1.79-4-4-4zm0 32.03h-36v-28.06h36v28.06z"/>
+                        <path d="M0 0h48v48h-48z" fill="none"/>
+                      </svg>
+                    </span>
+                    <p>Testimonial</p>
+                  </li>
+                </Link>                
+                <Link href='/admin/inquiry'>
+                  <li onClick={() => { toggleMenu(); setMenu("inquiry"); }} className={menu === "inquiry" ? "liActive" : "" } >
+                    <span>
+                      <svg height="25" viewBox="0 0 48 48" width="25" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M38 14h-16v12h16v-12zm4-8h-36c-2.21 0-4 1.79-4 4v28c0 2.21 1.79 3.96 4 3.96h36c2.21 0 4-1.76 4-3.96v-28c0-2.21-1.79-4-4-4zm0 32.03h-36v-28.06h36v28.06z"/>
+                        <path d="M0 0h48v48h-48z" fill="none"/>
+                      </svg>
+                    </span>
+                    <p>Inquiry</p>
                   </li>
                 </Link>                
               </ul>

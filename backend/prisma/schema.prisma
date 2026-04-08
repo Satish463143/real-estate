@@ -73,7 +73,6 @@ model User {
   firstName    String
   lastName     String
   phone        String?
-  avatarUrl    String?
   role         Role     @default(USER)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -94,7 +93,7 @@ model Agent {
   firstName    String
   lastName     String
   phone        String?
-  avatarUrl    String?
+  avatarUrl    Bytes?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -144,7 +143,6 @@ model Property {
   areaSizeUnit  String         @default("sqft")  // "sqft" | "sqm"
   bedrooms      Int?           // null for commercial / land
   bathrooms     Int?
-  floors        Int?
   floorNumber   Int?           // which floor (apartments)
   totalFloors   Int?
   parkingSpaces Int?
@@ -207,7 +205,7 @@ model Property {
 model PropertyImage {
   id         String   @id @default(cuid())
   propertyId String
-  url        String
+  image      Bytes
   altText    String?
   isPrimary  Boolean  @default(false)
   sortOrder  Int      @default(0)
@@ -283,4 +281,44 @@ model Inquiry {
   @@index([createdAt])
 }
 
+model Blog {
+  id           String   @id @default(cuid())
+  title        String
+  slug         String   @unique
+  subtitle     String
+  thumbnail    Bytes
+  heroImage    Bytes
+  category     String
+  date         DateTime
+  readTime     String
+  views        Int      @default(0)
+  likes        Int      @default(0)
+  isFeatured   Boolean  @default(false)
+  authorName   String
+  authorBio    String
+  authorAvatar String
+  content      String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
+  @@index([title])
+  @@index([slug])
+  @@index([category])
+  @@index([date])
+  
+}
+
+model Testimonial {
+  id           String   @id @default(cuid())
+  name         String
+  image        Bytes
+  review       String
+  rating       Int
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([name])
+  @@index([rating])
+  @@index([createdAt])
+}

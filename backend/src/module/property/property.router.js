@@ -4,26 +4,40 @@ const hasPermission = require('../../middleware/rbac.middlewares')
 const { bodyValidator } = require('../../middleware/validator.middlewares')
 const propertyController = require('./property.controller')
 const { createPropertyDTO, updatePropertyDTO } = require('./property.request')
+const { uploadImage } = require('../../middleware/imageUpload.middleware')
 
 const router = require('express').Router()
 
+// Up to 10 property images uploaded under the field name "images"
+const imageFields = [{ name: 'images', maxCount: 10 }]
 
 router.route('/')
-    // create property only admin can create
-    .post(loginCheck, hasPermission([Role.ADMIN]),bodyValidator(createPropertyDTO), propertyController.create)
-    // get all properties only admin can get
+    // create property – admin only
+    .post(
+        loginCheck,
+        hasPermission([Role.ADMIN]),
+        ...uploadImage(imageFields),
+        bodyValidator(createPropertyDTO),
+        propertyController.create
+    )
+    // list all properties – admin only
     .get(loginCheck, hasPermission([Role.ADMIN]), propertyController.index)
 
 router.route('/:id')
-    // get property by id for user
-    .get( propertyController.showById)
-    // update property only admin can update
-    .put(loginCheck, hasPermission([Role.ADMIN]),bodyValidator(updatePropertyDTO), propertyController.update)
-    // delete property only admin can delete
+    // public: get single property
+    .get(propertyController.showById)
+    // admin only: update
+    .put(
+        loginCheck,
+        hasPermission([Role.ADMIN]),
+        ...uploadImage(imageFields),
+        bodyValidator(updatePropertyDTO),
+        propertyController.update
+    )
+    // admin only: delete
     .delete(loginCheck, hasPermission([Role.ADMIN]), propertyController.delete)
 
-
-//fetech only properties which status are ACTIVE,SOLD,RENTED for user
-router.get('/listForHome',propertyController.listForHome)
+// Public listing for home page (ACTIVE / SOLD / RENTED only)
+router.get('/listForHome', propertyController.listForHome)
 
 module.exports = router

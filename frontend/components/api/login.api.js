@@ -53,17 +53,8 @@ export const AuthApi = createApi({
                 {"Content-Type":"multipart/form-data"}
             ])          
             }),
-        }), 
-        logout: builder.mutation({
-            query: () => ({
-                url: 'auth/logout',
-                method: 'POST',
-                headers:()=>([
-                    {"Content-Type":"multipart/form-data"}
-                ])
-            })
-        }),
+        })
       })
 
 })
-export const { useCreateCustomerMutation, useMeQuery, useLoginMutation} = AuthApi
+export const { useMeQuery, useLoginMutation} = AuthApi

@@ -72,6 +72,9 @@ class AgentsController {
     update = async(req,res,next)=>{
         try{
             const agent = await this.#validate(req.params.id)
+
+            if (!req.body.avatarUrl) delete req.body.avatarUrl
+
             const response = await agentsService.update(agent.id, req.body)
             res.json({
                 result:response,
