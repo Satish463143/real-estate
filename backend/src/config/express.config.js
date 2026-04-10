@@ -16,6 +16,8 @@ app.use(helmet());
 //  CORS (allow cross-origin requests)
 const allowedOrigin = [
     "http://localhost:3000",
+    "https://real-estate-erkn.vercel.app",
+    "www.real-estate-erkn.vercel.app",
     "http://127.0.0.1:3000"
 ];
 
