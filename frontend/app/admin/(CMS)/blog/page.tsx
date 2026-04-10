@@ -1,5 +1,5 @@
 "use client"
-import Blog from '@/components/CMS/Blog/BlogList'
+import Blog from '@/components/cms/Blog/BlogList'
 
 const page = () => {
   return <Blog/>

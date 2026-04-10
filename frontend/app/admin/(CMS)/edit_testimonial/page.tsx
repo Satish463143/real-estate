@@ -1,4 +1,4 @@
-import TestimonalEdit from '@/components/CMS/Testimonal/TestimonalEdit'
+import TestimonalEdit from '@/components/cms/Testimonal/TestimonalEdit'
 
 const Page = ()=>{
     return (
