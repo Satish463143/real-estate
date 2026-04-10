@@ -1,5 +1,4 @@
-const express = require("express");
-const router  = express.Router();
+const router = require("express").Router();
 const loginCheck    = require("../../middleware/auth.middlewares");
 const hasPermission = require("../../middleware/rbac.middlewares");
 const { bodyValidator }    = require("../../middleware/validator.middlewares");
@@ -9,15 +8,16 @@ const { Role } = require("../../config/constant.config");
  
 router.route('/')
     //anyone can create their profile
+
     .post(
         bodyValidator(userCreateDTO),
-        userController.createAdminStaff
+        userController.create
     )
     //list all user only admin can access
     .get(
         loginCheck,
         hasPermission([Role.ADMIN]),
-        userController.listUsers
+        userController.index
     );
   
 router.route("/:id")
@@ -25,19 +25,19 @@ router.route("/:id")
     .get(
         loginCheck,
         hasPermission([Role.ADMIN]),
-        userController.getUserById
+        userController.showById
     )
     //only slef user can update their profile
     .put(
         loginCheck,
         bodyValidator(userUpdateDTO),
-        userController.updateUser
+        userController.update
     )
     //only admin can delete user
     .delete(
-        "/:id",
         loginCheck,
         hasPermission([Role.ADMIN]),
-        userController.deleteUser
+        userController.delete
     );
+
 module.exports = router;

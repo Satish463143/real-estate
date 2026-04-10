@@ -1,8 +1,6 @@
 const bcrypt = require("bcryptjs");
 const userService = require("../user/user.service");
 const jwt = require("jsonwebtoken");
-const prisma = require("../../config/db.config");
-const { Status } = require("../../config/constant.config");
 require("dotenv").config();
 
 class AuthController {
@@ -14,8 +12,8 @@ class AuthController {
                 email: email
             })
 
-            if (user.status === Status.INACTIVE) {
-                throw { status: 401, message: "User is inactive" }
+            if (!user) {
+                throw { status: 401, message: "User not found" }
             }
 
             if (bcrypt.compareSync(password, user.password)) {
@@ -31,34 +29,14 @@ class AuthController {
                     expiresIn: "7d"
                 })
 
-                await prisma.user.update({
-                    where: { id: user.id },
-                    data: {
-                        lastLoginAt: new Date()
-                    }
-                })
-
-                let studentProfileId = null;
-                let parentProfileId = null;
-                if (user.role === "student") {
-                    const sp = await prisma.studentProfile.findFirst({ where: { userId: user.id } });
-                    studentProfileId = sp?.id ?? null;
-                }
-                if (user.role === "parent") {
-                    const pp = await prisma.parentProfile.findFirst({ where: { userId: user.id } });
-                    parentProfileId = pp?.id ?? null;
-                }
-
                 res.json({
                     result: {
                         userDetails: {
                             id: user.id,
-                            name: user.name,
+                            firstName: user.firstName,
+                            lastName: user.lastName,
                             email: user.email,
                             role: user.role,
-                            schoolId: user.schoolId,
-                            studentProfileId,
-                            parentProfileId,
                         },
                         token: { token, refreshToken }
 

@@ -1,5 +1,4 @@
 "use client"
-import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 import Link from 'next/link'
 
@@ -22,7 +21,13 @@ const DeleteButton = ({deleteAction,rowId}) => {
 
         }catch(exception){
             console.log(exception)
-            toast.error("Error deleting data")
+            Swal.fire({
+                title: "Error!",
+                text: "Something went wrong!",
+                icon: "error",
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "OK"
+              })
         }
     }
   return (

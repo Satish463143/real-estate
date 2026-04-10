@@ -13,6 +13,7 @@ const CMSLayout = ({children}: {children: React.ReactNode}) => {
   const [isMenuActive, setIsMenuActive] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
   const loggedInUser = useSelector((root: any) => root.user.loggedInUser);
+  console.log('loggedInUser',loggedInUser);
 
   const toggleMenu = () => {
     setIsMenuActive(!isMenuActive);

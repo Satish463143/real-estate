@@ -13,9 +13,6 @@ import { BlogApi } from '../../components/api/blog.api'
 import { FavouriteApi } from '../../components/api/favourite.api'
 import { TestimonialApi } from '../../components/api/testimonal.api'
 
-
-
-
 // Create a noop storage for SSR
 const createNoopStorage = () => {
     return {
@@ -72,8 +69,7 @@ const storeConfig = configureStore({
             .concat(AgentApi.middleware)
             .concat(BlogApi.middleware)
             .concat(FavouriteApi.middleware)
-            .concat(TestimonialApi.middleware)
-            
+            .concat(TestimonialApi.middleware)           
             
 })
 

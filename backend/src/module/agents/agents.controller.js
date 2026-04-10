@@ -14,26 +14,21 @@ class AgentsController {
             })
 
         }catch(exception){
-            console.log(exception);
+            console.log('create agent exception',exception);
             next(exception)
         }
     }
     index = async(req,res,next)=>{
         try{
-            const limit = req.query.limit || 10
-            const page = req.query.page || 0
+            const limit = parseInt(req.query.limit) || 10
+            const page = parseInt(req.query.page) || 1
             const skip = (page - 1) * limit 
 
             let filter = {}
             if (req.query.search){
-                filter.OR = [
-                    {firstName: {contains: req.query.search}},
-                    {lastName: {contains: req.query.search}},
-                    {email: {contains: req.query.search}},
-                    {phone: {contains: req.query.search}}
-                ]
+                filter.search = req.query.search
             }
-            const {data, count} = await agentsService.index(limit,skip,filter)
+            const {data, count} = await agentsService.index(filter, skip, limit)
 
             res.json({
                 result:data,

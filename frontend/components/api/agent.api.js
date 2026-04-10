@@ -44,10 +44,8 @@ export const AgentApi = createApi({
             query:(formData)=> ({
                 url: "/agent",
                 body:formData,
-                method:"POST",
-                headers:()=>([
-                    {"Content-Type":"multipart/form-data"}
-                ])
+                method:"POST"
+                // Don't set Content-Type for FormData - browser handles it automatically
             }),
             invalidatesTags: ['Agent', 'AgentList'],
             // Optimistic update for better UX
@@ -76,10 +74,8 @@ export const AgentApi = createApi({
             query:({id,payload})=> ({
                 url: `/agent/${id}`,
                 body:payload,
-                method:"PUT",
-                headers:()=>([
-                    {"Content-Type":"multipart/form-data"}
-                ])
+                method:"PUT"
+                // Don't set Content-Type for FormData - browser handles it automatically
             }),
             invalidatesTags: (result, error, { id }) => [
                 { type: 'Agent', id },

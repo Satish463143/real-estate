@@ -1,11 +1,11 @@
 const router = require("express").Router();
 const authRouter = require("../module/auth/auth.router")
 const userRouter = require("../module/user/user.router")
-const agentRouter = require("../module/agent/agent.router")
+const agentRouter = require("../module/agents/agents.router")
 const propertyRouter = require("../module/property/property.router")
-const testimonialRouter = require("../module/testimonial/testimonial.router")
-const blogRouter = require("../module/blog/blog.router")
-const favoriteRouter = require("../module/favorite/favorite.router")
+const testimonialRouter = require("../module/testimonal/testimonal.router")
+const blogRouter = require("../module/blogs/blogs.router")
+const favoriteRouter = require("../module/favourite/favourite.router")
 const inquiryRouter = require("../module/inquiry/inquiry.router")
 
 

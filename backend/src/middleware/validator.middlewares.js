@@ -7,7 +7,8 @@ const bodyValidator = (schema) => {
                 data[req.file.fieldname] = req.file.filename;
             }
 
-            await schema.validateAsync(data, { abortEarly: false });
+            const validatedData = await schema.validateAsync(data, { abortEarly: false, stripUnknown: true });
+            req.body = validatedData;
             next();
         } catch (exception) {
             const detail = {};

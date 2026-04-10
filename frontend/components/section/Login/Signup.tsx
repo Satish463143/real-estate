@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import './Login.css'
 import { TextInputComponent } from '@/components/common/InputBox/InputBox';
-import { useLoginMutation } from '../../api/login.api';
+import { useCreateUserMutation } from '../../api/user.api';
 import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -14,46 +14,47 @@ import Swal from 'sweetalert2';
 const Signup = () => {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
-    const [loginUser] = useLoginMutation()  
-    // Check if user is already logged in from Redux store, not from API call
+    const [createUser] = useCreateUserMutation()  
+    // Check if user is already logged in from Redux store
     const loggedInUser = useSelector((root:any) => root.user.loggedInUser);
   
     useEffect(() => {
       // Only redirect if user is in Redux store AND there's a valid token
       const token = localStorage.getItem('_at');
       if(loggedInUser && token){
-        
+          router.push('/my-account');
       }
-    },[])
+    },[loggedInUser, router])
   
-    const loginDTO = Yup.object({
-      email: Yup.string().email().required(),
-      password: Yup.string().required(),
+    const signupDTO = Yup.object({
+      firstName: Yup.string().required('First name is required'),
+      lastName: Yup.string().required('Last name is required'),
+      email: Yup.string().email('Invalid email').required('Email is required'),
+      phone: Yup.string().nullable(),
+      password: Yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
     });
 
     const { control, handleSubmit, formState: { errors } } = useForm({
-        resolver: yupResolver(loginDTO),
+        resolver: yupResolver(signupDTO),
     });
 
-    const login = async(data: any) => {
+    const signup = async(data: any) => {
         setLoading(true);
         try {
-            const response = await loginUser(data).unwrap();
-            localStorage.setItem("_at", response.result.token.token);
-            localStorage.setItem("_rt", response.result.token.refreshToken);
+            await createUser(data).unwrap();
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: "Account created successfully. Please login.",
+            })
             setTimeout(() => {
-                if(response.result.userDetails.role === 'admin'){
-                    router.push('/admin/dashboard');
-                }else{
-                    router.push('/my-account');
-                }
+                router.push('/login');
             }, 500); 
-
         }catch(error:any){
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: error.data?.message || "Login failed",
+                text: error.data?.message || "Signup failed",
             })
             console.log(error);
         }
@@ -64,18 +65,49 @@ const Signup = () => {
 
     return (
         <div className='login_container'>
-            <div className="login_box">
+            <div className="login_box" style={{ maxWidth: '500px' }}>
                 <div className="login_header">
-                    <h1>Login</h1>
-                    <p>Enter your credentials to access the dashboard</p>
+                    <h1>Sign Up</h1>
+                    <p>Create a new account</p>
                 </div>
                 
-                <form onSubmit={handleSubmit(login)} className="login_form">
+                <form onSubmit={handleSubmit(signup)} className="login_form">
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                        <div className="form_group" style={{ flex: 1 }}>
+                            <label htmlFor="firstName">First Name</label>
+                            <TextInputComponent
+                                type="text"
+                                placeholder="Enter first name"
+                                className=""
+                                style={{ }}
+                                control={control}
+                                name="firstName"
+                                defaultValue=""
+                                required={true}
+                                errMsg={errors.firstName?.message as string | null}
+                            />
+                        </div>
+                        <div className="form_group" style={{ flex: 1 }}>
+                            <label htmlFor="lastName">Last Name</label>
+                            <TextInputComponent
+                                type="text"
+                                placeholder="Enter last name"
+                                className=""
+                                style={{ }}
+                                control={control}
+                                name="lastName"
+                                defaultValue=""
+                                required={true}
+                                errMsg={errors.lastName?.message as string | null}
+                            />
+                        </div>
+                    </div>
+
                     <div className="form_group">
                         <label htmlFor="email">Email Address</label>
                         <TextInputComponent
                             type="email"
-                            placeholder="Enter your password"
+                            placeholder="Enter your email"
                             className=""
                             style={{ }}
                             control={control}
@@ -87,9 +119,24 @@ const Signup = () => {
                     </div>
 
                     <div className="form_group">
+                        <label htmlFor="phone">Phone Number (Optional)</label>
+                        <TextInputComponent
+                            type="text"
+                            placeholder="Enter your phone number"
+                            className=""
+                            style={{ }}
+                            control={control}
+                            name="phone"
+                            defaultValue=""
+                            required={false}
+                            errMsg={errors.phone?.message as string | null}
+                        />
+                    </div>
+
+                    <div className="form_group">
                         <label htmlFor="password">Password</label>
                         <TextInputComponent
-                            placeholder="Enter your password"
+                            placeholder="Create a password"
                             className=""
                             style={{ }}
                             type="password"
@@ -100,13 +147,24 @@ const Signup = () => {
                             errMsg={errors.password?.message as string | null}
                         />
                     </div>
-                    <button type='button' disabled={loading} className="login_button">
+
+                    <button type='submit' disabled={loading} className="login_button" style={{ marginTop: '10px' }}>
                         Sign Up
+                        {loading && <span className="loading_spinner">Signing up...</span>}
                     </button>
-                    <button type='submit' disabled={loading} className="login_button">
-                        Sign In
-                        {loading && <span className="loading_spinner">Signing in...</span>}
-                    </button>
+
+                    <div style={{ textAlign: 'center', marginTop: '15px' }}>
+                        <span style={{ color: '#666', fontSize: '14px' }}>
+                            Already have an account?{' '}
+                            <a 
+                                href="/login" 
+                                style={{ color: 'var(--primary-color)', textDecoration: 'none', fontWeight: 'bold' }}
+                                onClick={(e) => { e.preventDefault(); router.push('/login'); }}
+                            >
+                                Sign In
+                            </a>
+                        </span>
+                    </div>
                     
                 </form>
             </div>        

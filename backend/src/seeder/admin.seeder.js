@@ -1,7 +1,7 @@
 require("dotenv").config();
 
 const prisma = require("../config/db.config");
-const { Role, Status } = require("../config/constant.config");
+const { Role} = require("../config/constant.config");
 const bcrypt = require("bcryptjs");
 
 if (process.env.NODE_ENV === "production") {
@@ -24,17 +24,11 @@ const seedUser = async () => {
         const password = await bcrypt.hash(plainPassword, 12);
 
         const adminUser = {
-            name: process.env.SEED_ADMIN_NAME || "Super Admin",
+            firstName: process.env.SEED_ADMIN_NAME || "Super",
+            lastName: process.env.SEED_ADMIN_NAME || "Admin",
             email,
             password,
-            role: Role.SUPER_ADMIN,
-            status: Status.ACTIVE,
-            address: {
-                country: process.env.SEED_ADMIN_COUNTRY || "Nepal",
-                province: process.env.SEED_ADMIN_PROVINCE || "Province 1",
-                district: process.env.SEED_ADMIN_DISTRICT || "Morang",
-                fullAddress: process.env.SEED_ADMIN_ADDRESS || "Biratnagar",
-            },
+            role: Role.ADMIN,
         };
 
         console.log("\n🌱 Seeding admin user...\n");
@@ -50,7 +44,6 @@ const seedUser = async () => {
             console.log(`   Email: ${created.email}`);
             console.log(`   Name: ${created.name}`);
             console.log(`   Role: ${created.role}`);
-            console.log(`   Status: ${created.status}\n`);
         } else {
             console.log("ℹ️  Admin user already exists. Skipping.\n");
             console.log(`   Email: ${existing.email}`);

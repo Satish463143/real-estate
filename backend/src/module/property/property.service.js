@@ -193,9 +193,9 @@ class PropertyService {
             } = filters
 
             // Only show public-safe statuses
-            const ALLOWED_STATUSES = ['ACTIVE', 'SOLD', 'RENTED']
-            const statusFilter = status && ALLOWED_STATUSES.includes(status.toUpperCase())
-                ? status.toUpperCase()
+            const ALLOWED_STATUSES = ['active', 'sold', 'rented']
+            const statusFilter = status && ALLOWED_STATUSES.includes(status.toLowerCase())
+                ? status.toLowerCase()
                 : { in: ALLOWED_STATUSES }
 
             const where = { status: statusFilter }
@@ -210,9 +210,9 @@ class PropertyService {
                 ]
             }
 
-            if (propertyType)    where.propertyType    = propertyType.toUpperCase()
-            if (listingType)     where.listingType     = listingType.toUpperCase()
-            if (furnishingStatus) where.furnishingStatus = furnishingStatus.toUpperCase()
+            if (propertyType)    where.propertyType    = propertyType.toLowerCase()
+            if (listingType)     where.listingType     = listingType.toLowerCase()
+            if (furnishingStatus) where.furnishingStatus = furnishingStatus.toLowerCase()
 
             if (isFeatured !== undefined)
                 where.isFeatured = isFeatured === 'true' || isFeatured === true

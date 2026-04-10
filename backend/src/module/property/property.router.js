@@ -11,17 +11,36 @@ const router = require('express').Router()
 // Up to 10 property images uploaded under the field name "images"
 const imageFields = [{ name: 'images', maxCount: 10 }]
 
+// Middleware to parse JSON strings from FormData before Joi validation
+const parseNestedJSON = (req, res, next) => {
+    try {
+        if (req.body.location && typeof req.body.location === 'string') {
+            req.body.location = JSON.parse(req.body.location)
+        }
+        if (req.body.features && typeof req.body.features === 'string') {
+            req.body.features = JSON.parse(req.body.features)
+        }
+    } catch (e) {
+        console.error("Failed to parse nested JSON in property request", e);
+    }
+    next();
+}
+
 router.route('/')
     // create property – admin only
     .post(
         loginCheck,
         hasPermission([Role.ADMIN]),
         ...uploadImage(imageFields),
+        parseNestedJSON,
         bodyValidator(createPropertyDTO),
         propertyController.create
     )
     // list all properties – admin only
     .get(loginCheck, hasPermission([Role.ADMIN]), propertyController.index)
+
+// Public listing for home page (ACTIVE / SOLD / RENTED only)
+router.get('/listForHome', propertyController.listForHome)
 
 router.route('/:id')
     // public: get single property
@@ -31,13 +50,11 @@ router.route('/:id')
         loginCheck,
         hasPermission([Role.ADMIN]),
         ...uploadImage(imageFields),
+        parseNestedJSON,
         bodyValidator(updatePropertyDTO),
         propertyController.update
     )
     // admin only: delete
     .delete(loginCheck, hasPermission([Role.ADMIN]), propertyController.delete)
-
-// Public listing for home page (ACTIVE / SOLD / RENTED only)
-router.get('/listForHome', propertyController.listForHome)
 
 module.exports = router

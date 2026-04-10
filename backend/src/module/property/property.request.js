@@ -154,6 +154,9 @@ const updatePropertyDTO = Joi.object({
 
   publishedAt: Joi.date().iso().optional(),
 
+  // Relations
+  agentId: Joi.string().trim().optional(),
+
   // partial location update
   location: locationSchema.optional(),
 

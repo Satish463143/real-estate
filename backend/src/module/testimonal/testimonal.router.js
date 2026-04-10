@@ -1,11 +1,11 @@
 const router = require('express').Router()
-const loginCheck = require('../../middleware/auth.middleware')
-const hasPermission = require('../../middleware/rbac.middleware')
+const loginCheck = require('../../middleware/auth.middlewares')
+const hasPermission = require('../../middleware/rbac.middlewares')
 const testimonialController = require('./testimonal.controller')
-const { bodyvalidator } = require('../../middleware/validator.middleware')
 const testimonialDTO = require('./testimonal.request')
 const { uploadImage } = require('../../middleware/imageUpload.middleware')
 const { Role } = require('../../config/constant.config')
+const { bodyValidator } = require('../../middleware/validator.middlewares')
 
 // image field definition – reused on POST and PUT
 const imageFields = [{ name: 'image', maxCount: 1 }]
@@ -15,7 +15,7 @@ router.route('/')
         loginCheck,
         hasPermission([Role.ADMIN]),
         ...uploadImage(imageFields),       
-        bodyvalidator(testimonialDTO),
+        bodyValidator(testimonialDTO),
         testimonialController.createTestimonal
     )
     .get(testimonialController.index)
@@ -26,7 +26,7 @@ router.route('/:id')
         loginCheck,
         hasPermission([Role.ADMIN]),
         ...uploadImage(imageFields),
-        bodyvalidator(testimonialDTO),
+        bodyValidator(testimonialDTO),
         testimonialController.updateTestimonial
     )
     .delete(loginCheck, hasPermission([Role.ADMIN]), testimonialController.deleteTestimonial)

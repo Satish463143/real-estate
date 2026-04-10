@@ -19,16 +19,7 @@ const Login = () => {
     const router = useRouter();
     const [loginUser] = useLoginMutation()  
     // Check if user is already logged in from Redux store, not from API call
-    const loggedInUser = useSelector((root:any) => root.user.loggedInUser);
-  
-    useEffect(() => {
-      // Only redirect if user is in Redux store AND there's a valid token
-      const token = localStorage.getItem('_at');
-      if(loggedInUser && token){
-        return router.push('/admin/dashboard')
-      }
-    },[])
-  
+    
     const loginDTO = Yup.object({
       email: Yup.string().email().required(),
       password: Yup.string().required(),

@@ -170,7 +170,7 @@ const Banner = () => {
             </div>
 
             {/* Floating badge */}
-            <div className="absolute -bottom-5 -left-10 flex items-center gap-3 bg-white/8 backdrop-blur-2xl border border-white/10 rounded-2xl px-5 py-4">
+            {/* <div className="absolute -bottom-5 -left-10 flex items-center gap-3 bg-white/8 backdrop-blur-2xl border border-white/10 rounded-2xl px-5 py-4">
               <div className="w-10 h-10 rounded-xl bg-[linear-gradient(135deg,#C9A84C,#A8883A)] flex items-center justify-center shrink-0">
                 <svg width="20" height="20" fill="none" stroke="#0A1628" strokeWidth="2.5" viewBox="0 0 24 24">
                   <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
@@ -181,7 +181,7 @@ const Banner = () => {
                 <div className="text-white font-bold text-sm">250+ Listings</div>
                 <div className="text-white/45 text-xs">Added this week</div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
 

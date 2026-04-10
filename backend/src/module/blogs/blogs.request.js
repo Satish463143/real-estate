@@ -1,5 +1,4 @@
 const joi = require('joi')
-const { isFeatued } = require('../../config/constant.config')
 
 const blogsDTO = joi.object({
     title: joi.string().required(),
@@ -9,7 +8,7 @@ const blogsDTO = joi.object({
     category: joi.string().required(),
     date: joi.date().required(),
     readTime: joi.string().required(),
-    isFeatured: joi.string().valid(...Object.values(isFeatued)).required(),    
+    isFeatured: joi.boolean().required(),    
     authorName: joi.string().required(),
     authorBio: joi.string().required(),
     authorAvatar: joi.any().optional().allow(null),  // Buffer – validated by multer

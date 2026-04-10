@@ -1,8 +1,8 @@
 const router = require('express').Router()
-const loginCheck = require('../../middleware/auth.middleware')
-const hasPermission = require('../../middleware/rbac.middleware')
+const loginCheck = require('../../middleware/auth.middlewares')
+const hasPermission = require('../../middleware/rbac.middlewares')
 const blogsController = require('./blogs.controller')
-const {bodyvalidator} = require('../../middleware/validator.middleware')
+const {bodyValidator} = require('../../middleware/validator.middlewares')
 const blogsDTO = require('./blogs.request')
 const { uploadImage } = require('../../middleware/imageUpload.middleware')
 const { Role } = require('../../config/constant.config')
@@ -16,14 +16,14 @@ const imageFields = [
 router.route('/')
     .post(loginCheck, hasPermission([Role.ADMIN]),
         ...uploadImage(imageFields), 
-        bodyvalidator(blogsDTO), blogsController.createBlogs)
+        bodyValidator(blogsDTO), blogsController.createBlogs)
     .get(blogsController.index)
 
 router.route('/:id')
     .get(blogsController.showById)
     .put(loginCheck, hasPermission([Role.ADMIN]), 
         ...uploadImage(imageFields), 
-        bodyvalidator(blogsDTO), blogsController.updateBlogs)
+        bodyValidator(blogsDTO), blogsController.updateBlogs)
     .delete(loginCheck, hasPermission([Role.ADMIN]), blogsController.deleteBlogs)
 
 router.route('/:id/like')

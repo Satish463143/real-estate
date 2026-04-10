@@ -19,7 +19,7 @@
 .dashboard_grid_item{
     width: 200px;
     height: 150px;
-    background: var(--sec_color);
+    background: #C9A84C;
     border-radius: 10px;
     padding: 30px 20px 20px 20px;
     display: flex;
@@ -54,10 +54,10 @@
 }
 .admin_margin_box{
     margin: 20px;
-    border: 1px solid var(--sec_dark);
+    border: 1px solid #C9A84C;
     border-radius: 10px;
     padding: 20px;
-    box-shadow: 0px 0px 10px 3px var(--sec_dark);
+    box-shadow: 0px 0px 10px 3px #C9A84C;
     height: calc(100vh - 115px);
     overflow-y: scroll;
     scrollbar-width: none;
@@ -69,7 +69,7 @@
 .admin_navbar{
     width: 100%;
     height: 100vh;
-    border-right: 1px solid var(--sec_dark);
+    border-right: 1px solid #C9A84C;
     padding: 10px;
     /* margin-left: -100%; */
 }
@@ -101,7 +101,7 @@
     gap: 20px;
     align-items: center;
     padding: 10px;
-    background: var(--sec_dark);
+    background: #C9A84C;
     border-radius: 10px;
     margin-top: 20px;
 }
@@ -121,14 +121,14 @@
     border-radius: 10px;
 }
 .liActive{
-    background: var(--sec_dark);
+    background: #C9A84C;
 }
 .top_nav{
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 15px;
-    border-bottom: 1px solid var(--sec_dark);
+    border-bottom: 1px solid #C9A84C;
 }
 
 .top_nav_end ul li {
@@ -194,7 +194,7 @@
     left: -100%;
     width: 100%;
     height: 100vh;
-    border-right: 1px solid var(--sec_dark);
+    border-right: 1px solid #C9A84C;
     padding: 10px;
     background: var(--white);
     transition: 0.5s ease-in-out;
@@ -244,11 +244,11 @@
 .blog_table table{
     width: 100%;
     border-collapse: collapse;
-    border: 2px solid var(--sec_dark);
+    border: 2px solid #C9A84C;
 }
 .blog_table th,
 .blog_table td {
-    border: 1px solid var(--sec_dark);
+    border: 1px solid #C9A84C;
 }
 .blog_table table thead th{
     height: 40px;
@@ -272,7 +272,7 @@
 }
 .edit_btn{
     padding: 5px 40px;    
-    background-color: var(--sec_dark);
+    background-color: #C9A84C;
     color: var(--white);
     border-radius: 5px;
 }
@@ -288,7 +288,7 @@
 }
 .banner_form form input,.banner_form form textarea,.banner_form form select, .banner_form form video{
     height: 40px;
-    border: 1px solid var(--sec_dark);
+    border: 1px solid #C9A84C;
     background: none;
     border-radius: 5px;
     width: 100%;
@@ -321,7 +321,7 @@
 .selected_it {
     padding: 15px;
     margin: 15px 0;
-    background: var(--sec_dark);
+    background: #C9A84C;
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -354,7 +354,7 @@
     width: 18px;
     height: 18px;
     cursor: pointer;
-    accent-color: var(--sec_dark);
+    accent-color: #C9A84C;
 }
 
 .blog_table th input[type="checkbox"] {
@@ -551,7 +551,7 @@
         content: '← Swipe to see more →';
         display: block;
         text-align: center;
-        color: var(--sec_dark);
+        color: #C9A84C;
         font-size: 12px;
         margin-top: 10px;
         opacity: 0.7;

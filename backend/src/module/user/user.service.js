@@ -49,6 +49,16 @@ class UserService {
             throw(exception)
         }
     }
+    getSingleUserByFilter = async(filter)=>{
+        try{
+            const user = await prisma.user.findFirst({
+                where: filter
+            })
+            return user
+        }catch(exception){
+            throw(exception)
+        }
+    }
     update = async(id, data)=>{
         try{
             const response = await prisma.user.update({

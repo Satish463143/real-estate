@@ -17,9 +17,7 @@ const loginCheck = async (req, res, next) => {
             throw{status:403, message: "Main Token is required"}
         }
 
-        const user = await userService.getUserById({
-            id: data.sub
-        });
+        const user = await userService.getUserById(data.sub);
 
         if (!user) {
             throw { status: 404, message: "User does not exist" };
