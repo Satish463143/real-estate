@@ -1,9 +1,9 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useShowByIdQuery } from '@/components/api/properties.api';
-import { MapPin, Bed, Bath, Square, Calendar, CheckCircle, Phone, Mail, User, ShieldCheck, ChevronLeft } from 'lucide-react';
-import Link from 'next/link';
+import { useCreateInquiryMutation } from '@/components/api/inquiry.api';
+import { MapPin, Bed, Bath, Square, Calendar, CheckCircle, Phone, Mail, User, ShieldCheck, ChevronLeft, X } from 'lucide-react';
 
 const PropertyDetail = () => {
   const searchParams = useSearchParams();
@@ -13,6 +13,29 @@ const PropertyDetail = () => {
   const { data, isLoading, isError } = useShowByIdQuery(id, {
     skip: !id,
   });
+
+  const [createInquiry, { isLoading: isSubmitting }] = useCreateInquiryMutation();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [inquiryForm, setInquiryForm] = useState({ name: '', email: '', phone: '', message: '' });
+  const [successMsg, setSuccessMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const handleInquirySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSuccessMsg('');
+    setErrorMsg('');
+    try {
+      await createInquiry({ ...inquiryForm, propertyId: id as string }).unwrap();
+      setSuccessMsg('Your inquiry has been sent successfully!');
+      setInquiryForm({ name: '', email: '', phone: '', message: '' });
+      setTimeout(() => {
+        setIsModalOpen(false);
+        setSuccessMsg('');
+      }, 3000);
+    } catch (err: any) {
+      setErrorMsg(err.data?.message || 'Failed to send inquiry. Please try again.');
+    }
+  };
 
   if (isLoading || !id) {
     return (
@@ -269,11 +292,8 @@ const PropertyDetail = () => {
               </div>
 
               <div className="space-y-3">
-                <button className="w-full bg-[#0D1A30] hover:bg-blue-600 text-white font-bold py-4 px-6 rounded-xl transition duration-300 shadow-md">
-                  Contact Agent
-                </button>
-                <button className="w-full bg-white hover:bg-gray-50 border-2 border-gray-200 text-[#0D1A30] font-bold py-3.5 px-6 rounded-xl transition duration-300">
-                  Request Tour
+                <button onClick={() => setIsModalOpen(true)} className="w-full bg-[#0D1A30] hover:bg-blue-600 text-white font-bold py-4 px-6 rounded-xl transition duration-300 shadow-md">
+                  Send Inquiry
                 </button>
               </div>
 
@@ -282,6 +302,87 @@ const PropertyDetail = () => {
 
         </div>
       </div>
+
+      {/* Inquiry Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-4">
+          <div className="bg-white rounded-2xl p-6 md:p-8 w-full max-w-md relative animate-in fade-in zoom-in duration-200">
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <h3 className="text-2xl font-bold text-[#0D1A30] mb-2">Send Inquiry</h3>
+            <p className="text-gray-500 mb-6 text-sm">Fill out the form below to inquire about this property.</p>
+            
+            {successMsg && (
+              <div className="bg-emerald-50 text-emerald-600 px-4 py-3 rounded-lg mb-4 text-sm font-medium">
+                {successMsg}
+              </div>
+            )}
+            
+            {errorMsg && (
+              <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg mb-4 text-sm font-medium">
+                {errorMsg}
+              </div>
+            )}
+
+            <form onSubmit={handleInquirySubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                <input
+                  type="text"
+                  required
+                  value={inquiryForm.name}
+                  onChange={(e) => setInquiryForm({ ...inquiryForm, name: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="John Doe"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                <input
+                  type="email"
+                  required
+                  value={inquiryForm.email}
+                  onChange={(e) => setInquiryForm({ ...inquiryForm, email: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="john@example.com"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number (Optional)</label>
+                <input
+                  type="tel"
+                  value={inquiryForm.phone}
+                  onChange={(e) => setInquiryForm({ ...inquiryForm, phone: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="+1 (555) 000-0000"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                <textarea
+                  required
+                  rows={4}
+                  value={inquiryForm.message}
+                  onChange={(e) => setInquiryForm({ ...inquiryForm, message: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="I am interested in this property..."
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={isSubmitting || !!successMsg}
+                className={`w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ${(isSubmitting || successMsg) ? 'opacity-70 cursor-not-allowed' : ''}`}
+              >
+                {isSubmitting ? 'Sending...' : 'Send Message'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

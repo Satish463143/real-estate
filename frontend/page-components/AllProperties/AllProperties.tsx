@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Pagination } from 'flowbite-react';
 import PropertySidebarFilter, { PropertyFilterParams } from '@/components/section/AllProperties/PropertySidebarFilter';
 import PropertyList from '@/components/section/AllProperties/PropertyList';
@@ -9,9 +10,14 @@ const AllProperties = () => {
   const [page, setPage] = useState(1);
   const limit = 9;
   
-  const [filters, setFilters] = useState<PropertyFilterParams>({
-    sortBy: 'createdAt',
-    sortOrder: 'desc'
+  const searchParams = useSearchParams();
+  
+  const [filters, setFilters] = useState<PropertyFilterParams>(() => {
+    const initial: PropertyFilterParams = { sortBy: 'createdAt', sortOrder: 'desc' };
+    if (searchParams?.get('search')) initial.search = searchParams.get('search') as string;
+    if (searchParams?.get('propertyType')) initial.propertyType = searchParams.get('propertyType') as string;
+    if (searchParams?.get('listingType')) initial.listingType = searchParams.get('listingType') as string;
+    return initial;
   });
 
   const { data, isLoading, isFetching } = useListForHomeQuery({

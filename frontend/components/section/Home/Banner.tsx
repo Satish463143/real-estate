@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const TABS = ["buy", "rent", "sell"] as const;
 const CITIES = ["Kathmandu", "Lalitpur", "Bhaktapur", "Pokhara"];
@@ -13,9 +14,24 @@ const stats = [
 ];
 
 const Banner = () => {
-  const [activeTab, setActiveTab]       = useState<"buy" | "rent" | "sell">("buy");
+  const [activeTab, setActiveTab]       = useState<"sell" | "rent" | "buy">("sell");
   const [propertyType, setPropertyType] = useState("All Types");
   const [location, setLocation]         = useState("");
+  const router = useRouter();
+
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+    if (location) params.append('search', location);
+    if (propertyType !== "All Types") params.append('propertyType', propertyType.toLowerCase());
+    
+    if (activeTab === "buy") {
+      params.append('listingType', 'for_sale');
+    } else if (activeTab === "rent") {
+      params.append('listingType', 'for_rent');
+    }
+    
+    router.push(`/all-properties?${params.toString()}`);
+  };
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-[linear-gradient(135deg,#0A1628_0%,#1E3A5F_50%,#0A1628_100%)]">
@@ -103,7 +119,7 @@ const Banner = () => {
                 </div>
                 {/* Button */}
                 <div className="flex items-end">
-                  <button className="flex items-center gap-2 bg-[linear-gradient(135deg,#C9A84C,#A8883A)] text-primary font-bold text-sm px-6 py-3 rounded-full shadow-[0_4px_20px_rgba(201,168,76,0.4)] hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(201,168,76,0.55)] transition-all duration-200 cursor-pointer border-none whitespace-nowrap">
+                  <button onClick={handleSearch} className="flex items-center gap-2 bg-[linear-gradient(135deg,#C9A84C,#A8883A)] text-primary font-bold text-sm px-6 py-3 rounded-full shadow-[0_4px_20px_rgba(201,168,76,0.4)] hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(201,168,76,0.55)] transition-all duration-200 cursor-pointer border-none whitespace-nowrap">
                     <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                       <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
                     </svg>
