@@ -120,6 +120,23 @@ class PropertyController {
             next(exception)
         }
     }
+
+    // ── KNN: Similar Properties ───────────────────────────────────────────────
+    getSimilarProperties = async (req, res, next) => {
+        try {
+            const k = parseInt(req.query.k) || 4
+            const similar = await propertyService.getSimilarProperties(req.params.id, k)
+            res.json({
+                result:  similar,
+                message: 'Similar properties fetched successfully',
+                meta:    { k },
+            })
+        } catch (exception) {
+            console.log(exception)
+            next(exception)
+        }
+    }
 }
 
 module.exports = new PropertyController()
+

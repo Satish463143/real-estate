@@ -4,6 +4,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useShowByIdQuery } from '@/components/api/properties.api';
 import { useCreateInquiryMutation } from '@/components/api/inquiry.api';
 import { MapPin, Bed, Bath, Square, Calendar, CheckCircle, Phone, Mail, User, ShieldCheck, ChevronLeft, X } from 'lucide-react';
+import SimilarProperties from './SimilarProperties';
 
 const PropertyDetail = () => {
   const searchParams = useSearchParams();
@@ -301,6 +302,10 @@ const PropertyDetail = () => {
           </aside>
 
         </div>
+
+        {/* ── KNN: Similar Properties ── */}
+        {id && <SimilarProperties propertyId={id} />}
+
       </div>
 
       {/* Inquiry Modal */}

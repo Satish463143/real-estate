@@ -42,6 +42,9 @@ router.route('/')
 // Public listing for home page (ACTIVE / SOLD / RENTED only)
 router.get('/listForHome', propertyController.listForHome)
 
+// KNN: Similar properties (public)
+router.get('/:id/similar', propertyController.getSimilarProperties)
+
 router.route('/:id')
     // public: get single property
     .get(propertyController.showById)

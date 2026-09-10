@@ -261,6 +261,105 @@ class PropertyService {
             throw exception
         }
     }
+    // ── KNN: SIMILAR PROPERTIES ───────────────────────────────────────────────
+    //
+    //  College-level K-Nearest Neighbors using Euclidean distance.
+    //
+    //  Feature vector per property:
+    //    [0] price          (numeric, normalised)
+    //    [1] areaSize       (numeric, normalised)
+    //    [2] bedrooms       (numeric, normalised)
+    //    [3] bathrooms      (numeric, normalised)
+    //    [4] propertyType   (categorical → 0 if same, 1 if different)
+    //    [5] listingType    (categorical → 0 if same, 1 if different)
+    //    [6] city           (categorical → 0 if same, 1 if different)
+    //
+    getSimilarProperties = async (propertyId, k = 4) => {
+        try {
+            // 1. Fetch the target property
+            const target = await prisma.property.findUnique({
+                where:   { id: propertyId },
+                include: DEFAULT_INCLUDE,
+            })
+            if (!target) throw { status: 404, message: 'Property not found' }
+
+            // 2. Fetch all other active properties (exclude the current one)
+            const candidates = await prisma.property.findMany({
+                where: {
+                    id:     { not: propertyId },
+                    status: { in: ['active', 'sold', 'rented'] },
+                },
+                include: {
+                    location: true,
+                    images:   { where: { isPrimary: true }, take: 1 },
+                    features: true,
+                    agent:    { select: { id: true, firstName: true, lastName: true } },
+                },
+            })
+
+            if (candidates.length === 0) return []
+
+            // 3. Collect all properties (target + candidates) to compute global min/max
+            const all = [target, ...candidates]
+
+            const getNum = (p, key) => parseFloat(p[key]) || 0
+
+            const prices    = all.map(p => getNum(p, 'price'))
+            const areas     = all.map(p => getNum(p, 'areaSize'))
+            const bedrooms  = all.map(p => getNum(p, 'bedrooms'))
+            const bathrooms = all.map(p => getNum(p, 'bathrooms'))
+
+            // Min-max normalisation helper: returns 0 if range is 0
+            const normalise = (value, min, max) =>
+                max === min ? 0 : (value - min) / (max - min)
+
+            const minMax = (arr) => ({ min: Math.min(...arr), max: Math.max(...arr) })
+
+            const priceRange    = minMax(prices)
+            const areaRange     = minMax(areas)
+            const bedroomRange  = minMax(bedrooms)
+            const bathroomRange = minMax(bathrooms)
+
+            // 4. Build feature vector for the target property
+            const targetVec = [
+                normalise(getNum(target, 'price'),     priceRange.min,    priceRange.max),
+                normalise(getNum(target, 'areaSize'),  areaRange.min,     areaRange.max),
+                normalise(getNum(target, 'bedrooms'),  bedroomRange.min,  bedroomRange.max),
+                normalise(getNum(target, 'bathrooms'), bathroomRange.min, bathroomRange.max),
+                0, // categorical: distance from itself is always 0
+                0,
+                0,
+            ]
+
+            // 5. Compute Euclidean distance for each candidate
+            const withDistance = candidates.map(candidate => {
+                const vec = [
+                    normalise(getNum(candidate, 'price'),     priceRange.min,    priceRange.max),
+                    normalise(getNum(candidate, 'areaSize'),  areaRange.min,     areaRange.max),
+                    normalise(getNum(candidate, 'bedrooms'),  bedroomRange.min,  bedroomRange.max),
+                    normalise(getNum(candidate, 'bathrooms'), bathroomRange.min, bathroomRange.max),
+                    candidate.propertyType === target.propertyType ? 0 : 1,
+                    candidate.listingType  === target.listingType  ? 0 : 1,
+                    candidate.location?.city?.toLowerCase() === target.location?.city?.toLowerCase() ? 0 : 1,
+                ]
+
+                // Euclidean distance = sqrt(sum of squared differences)
+                const distance = Math.sqrt(
+                    vec.reduce((sum, val, i) => sum + Math.pow(val - targetVec[i], 2), 0)
+                )
+
+                return { candidate, distance }
+            })
+
+            // 6. Sort by ascending distance (nearest first) and take top K
+            withDistance.sort((a, b) => a.distance - b.distance)
+            const topK = withDistance.slice(0, k).map(item => item.candidate)
+
+            return topK.map(serialize)
+        } catch (exception) {
+            throw exception
+        }
+    }
 }
 
 

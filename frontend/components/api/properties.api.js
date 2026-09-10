@@ -97,6 +97,13 @@ export const PropertiesApi = createApi({
                 "PropertyList",
             ],
         }),
+
+        // KNN: Get similar properties for a given property id
+        getSimilarProperties: builder.query({
+            query: ({ id, k = 4 }) => `/property/${id}/similar?k=${k}`,
+            providesTags: (result, error, { id }) => [{ type: "Property", id: `similar-${id}` }],
+            keepUnusedDataFor: 600,
+        }),
     }),
 })
 
@@ -107,6 +114,7 @@ export const {
     useCreatePropertyMutation,
     useUpdatePropertyMutation,
     useDeletePropertyMutation,
+    useGetSimilarPropertiesQuery,
 } = PropertiesApi
 
 export const { prefetch, invalidateTags, updateQueryData } = PropertiesApi.util
