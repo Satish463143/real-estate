@@ -121,11 +121,11 @@ const PropertyDetail = () => {
           
           <div className="lg:text-right shrink-0">
             <div className="text-4xl md:text-5xl font-black text-[#0D1A30] tracking-tight">
-              {formatPrice(property.price)}
+              NPR. {property.price}
               {isRent && <span className="text-xl text-gray-400 font-medium ml-1">/mo</span>}
             </div>
             {property.pricePerSqft && (
-              <p className="text-gray-500 mt-1 font-medium">{formatPrice(property.pricePerSqft)} / {property.areaSizeUnit}</p>
+              <p className="text-gray-500 mt-1 font-medium">(NPR. {property.pricePerSqft} / {property.areaSizeUnit})</p>
             )}
           </div>
         </div>

@@ -98,7 +98,7 @@ const Featured = () => {
 
                     {/* Price */}
                     <div className="absolute bottom-4 left-4 font-display text-xl font-bold text-accent-light">
-                      {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(prop.price)}
+                      NPR.{(prop.price)}
                     </div>
                   </div>
 

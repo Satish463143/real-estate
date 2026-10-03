@@ -37,10 +37,6 @@ interface PropertyCardProps {
 
 const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
   const primaryImage = property.images?.find(img => img.isPrimary)?.image || property.images?.[0]?.image || '/property-placeholder.jpg';
-  
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(price);
-  };
 
   const formatType = (str: string) => str.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 
@@ -90,7 +86,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
           </p>
 
           <div className="text-2xl font-extrabold text-gray-900 mb-5">
-            {formatPrice(property.price)}
+            NPR.{(property.price)}
           </div>
 
           <div className="mt-auto pt-4 border-t border-gray-100 flex justify-between items-center text-gray-600 text-sm">

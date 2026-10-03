@@ -115,7 +115,7 @@ const SimilarProperties = ({ propertyId }: SimilarPropertiesProps) => {
               <div className="p-4">
                 {/* Price */}
                 <div className="text-xl font-extrabold text-[#0D1A30] mb-1">
-                  {formatPrice(property.price)}
+                  NPR. {property.price}
                   {property.listingType === 'for_rent' && (
                     <span className="text-sm text-gray-400 font-medium ml-1">/mo</span>
                   )}

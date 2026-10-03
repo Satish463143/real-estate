@@ -117,7 +117,7 @@ const LatestProperties = () => {
                     <div className="flex items-end justify-between pt-3 mt-3 border-t border-gray-100">
                       <div className="truncate pr-2">
                         <span className="font-display font-bold text-primary text-lg sm:text-xl">
-                          {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(prop.price)}
+                          NPR.{prop.price}
                         </span>
                         {isRent && (
                           <span className="text-gray-400 text-[10px] sm:text-xs ml-1">/mo rent</span>

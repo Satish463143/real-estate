@@ -71,11 +71,7 @@ const AllProperties = () => {
                 <span className="text-gray-700 font-medium">
                   Showing <span className="text-blue-600 font-bold">{properties.length}</span> of <span className="font-bold">{meta?.total || 0}</span> result{meta?.total !== 1 ? 's' : ''}
                 </span>
-                {filters.sortBy && (
-                  <span className="text-sm text-gray-500">
-                    Sorted by: <span className="font-medium text-gray-800 capitalize">{filters.sortBy}</span>
-                  </span>
-                )}
+             
               </div>
             )}
 
